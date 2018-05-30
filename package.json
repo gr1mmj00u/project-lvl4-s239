@@ -1,0 +1,81 @@
+{
+  "name": "cross-task-manager",
+  "version": "1.0.0",
+  "description": "Task manager",
+  "main": "index.js",
+  "engines": {
+    "node": "9"
+  },
+  "scripts": {
+    "test": "jest",
+    "babel-node": "babel-node",
+    "build": "npm run webpack -- -p --env production && babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "eslint": "eslint",
+    "nodemon": "nodemon",
+    "gulp": "gulp",
+    "start": "gulp server",
+    "webpack": "webpack"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gr1mmj00u/project-lvl4-s239.git"
+  },
+  "keywords": [
+    "task",
+    "manager"
+  ],
+  "author": "Stanislav Kharitonov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gr1mmj00u/project-lvl4-s239/issues"
+  },
+  "homepage": "https://github.com/gr1mmj00u/project-lvl4-s239#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "bootstrap": "^4.1.1",
+    "css-loader": "^0.28.11",
+    "debug": "^3.1.0",
+    "dotenv": "^5.0.1",
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.8",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-flash-simple": "0.0.3",
+    "koa-generic-session": "^2.0.1",
+    "koa-logger": "^3.2.0",
+    "koa-methodoverride": "^2.0.0",
+    "koa-pug": "^3.0.0-2",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.3",
+    "koa-webpack": "^4.0.0",
+    "lodash": "^4.17.10",
+    "rollbar": "^2.4.0",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.9.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "babel-jest": "^23.0.1",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-flowtype": "^2.47.1",
+    "eslint-plugin-import": "^2.12.0",
+    "jest": "^23.0.1",
+    "jest-cli": "^23.0.1",
+    "jest-supertest-matchers": "0.0.1",
+    "nodemon": "^1.17.5",
+    "supertest": "^3.1.0",
+    "webpack-cli": "^2.1.4"
+  }
+}
