@@ -11,7 +11,7 @@ describe('requests', () => {
   });
 
   beforeEach(() => {
-    server = app().listen();
+    server = app().listen(3001);
   });
 
   it('GET 200', async () => {
@@ -20,14 +20,15 @@ describe('requests', () => {
     expect(res).toHaveHTTPStatus(200);
   });
 
-  // it('GET 404', async () => {
-  //   const res = await request.agent(server)
-  //     .get('/wrong-path');
-  //   expect(res).toHaveHTTPStatus(404);
-  // });
+  it('GET 404', async () => {
+    const res = await request.agent(server)
+      .get('/wrong-path');
+    expect(res).toHaveHTTPStatus(404);
+  });
 
   afterEach((done) => {
     server.close();
+    // server.destroy();
     done();
   });
 });

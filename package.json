@@ -7,7 +7,7 @@
     "node": "9"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "babel-node": "babel-node",
     "build": "npm run webpack -- -p --env production && babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build",
@@ -15,7 +15,8 @@
     "nodemon": "nodemon",
     "gulp": "gulp",
     "start": "gulp server",
-    "webpack": "webpack"
+    "webpack": "webpack",
+    "sequelize": "sequelize"
   },
   "files": [
     "dist"
@@ -35,9 +36,11 @@
   },
   "homepage": "https://github.com/gr1mmj00u/project-lvl4-s239#readme",
   "dependencies": {
+    "autoprefixer": "^8.5.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
@@ -48,6 +51,8 @@
     "dotenv": "^5.0.1",
     "gulp": "^3.9.1",
     "gulp-util": "^3.0.8",
+    "jquery": "^3.3.1",
+    "jquery-ujs": "^1.2.2",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-flash-simple": "0.0.3",
@@ -59,7 +64,12 @@
     "koa-static": "^4.0.3",
     "koa-webpack": "^4.0.0",
     "lodash": "^4.17.10",
+    "popper.js": "^1.14.3",
+    "precss": "^3.1.2",
     "rollbar": "^2.4.0",
+    "sequelize": "^4.37.10",
+    "sequelize-cli": "^4.0.0",
+    "sqlite3": "^4.0.0",
     "style-loader": "^0.21.0",
     "webpack": "^4.9.1"
   },

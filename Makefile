@@ -7,7 +7,7 @@ lint:
 build:
 	npm run build
 test:
-	npm test
+	NODE_ENV="development" npm test
 
 prepare:
 	touch .bash_history
@@ -15,5 +15,11 @@ prepare:
 
 start:
 	DEBUG="application:*" npm run nodemon -- --watch .  --ext '.js' --exec npm run gulp -- server
+
+console:
+	npm run gulp console
+
+db-setup:
+	npm run sequelize db:migrate
 
 .PHONY: test

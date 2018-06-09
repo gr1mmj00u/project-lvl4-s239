@@ -1,0 +1,35 @@
+include /mixins/forms.pug
+include /mixins/buttons.pug
+
+doctype html
+html(lang="en")
+  head
+    title= Title
+    script(src='/assets/main.js')
+  body
+    .d-flex.flex-column.flex-md-row.align-items-center.p-3.px-md-4.mb-3.bg-white.border-bottom.box-shadow
+      h5.my-0.mr-md-auto.font-weight-normal
+        a(href="/") Cross-Task-Manager
+      nav.my-2.my-md-0.mr-md-3
+        a.p-2.text-dark(href=urlFor('users')) Users
+        a.p-2.text-dark(href="#") Tasks
+        a.p-2.text-dark(href="#") Support
+        a.p-2.text-dark(href="#") About
+      if isSignedIn()
+        div.dropdown.show
+          a.btn.btn-secondary.dropdown-toggle(href="#" id="dropdownMenuLink"
+                                              role="button" data-toggle="dropdown"
+                                              aria-haspopup="true" aria-expanded="false")= user.fullName()
+          .dropdown-menu(aria-labelledby="dropdownMenuLink")
+            a.dropdown-item(href=urlFor('user')) Edit
+            a.dropdown-item(href=urlFor('session') data-method='delete' rel='nofollow') Sign out
+      else
+        nav.my-2.my-md-0.mr-md-3
+          a.btn.btn-outline-primary.mr-sm-2(href=urlFor('newSession')) Sign in
+          a.btn.btn-outline-success(href=urlFor('newUser')) Sign up
+    .container
+      - const msg = flash.get()
+      if msg
+        .alert.alert-info.m-3= msg
+      block content
+    
