@@ -13,7 +13,7 @@ import methodOverride from 'koa-methodoverride';
 import path from 'path';
 import Rollbar from 'rollbar';
 import _ from 'lodash';
-import webpackConfig from './webpack.config';
+import webpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
 import container from './container';
 import { authUser } from './lib/user';
@@ -38,7 +38,7 @@ export default () => {
       }
       // Set status on ctx
       ctx.status = parseInt(err.status, 10) || ctx.status || 500;
-      // Build response or do whatever you want depending on status 
+      // Build response or do whatever you want depending on status
       switch (ctx.status) {
         case 400:
         case 401:
@@ -89,7 +89,7 @@ export default () => {
   }));
 
   // STATIC
-  app.use(serve(path.join(__dirname, '..', 'public')));
+  app.use(serve(path.join(__dirname, 'public')));
 
   // WEBPACK
   if (process.env.NODE_ENV !== 'production') {
