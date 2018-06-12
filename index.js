@@ -89,7 +89,7 @@ export default () => {
   }));
 
   // STATIC
-  app.use(serve(path.join('./public')));
+  app.use(serve(process.cwd()));
 
   // WEBPACK
   if (process.env.NODE_ENV !== 'production') {
