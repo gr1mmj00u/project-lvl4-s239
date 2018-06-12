@@ -6,9 +6,9 @@ module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: ['./src/index.js'],
   output: {
-    path: path.join(__dirname, 'public', 'assets'),
+    path: path.join(__dirname, 'public'),
     filename: 'main.js',
-    publicPath: '/assets/',
+    publicPath: '/public/',
   },
   // optimization: {
   //   splitChunks: {
