@@ -18,6 +18,8 @@ import addRoutes from './routes';
 import container from './container';
 import { authUser } from './lib/user';
 
+process.env.PWD = process.cwd();
+
 export default () => {
   const app = new Koa();
 
@@ -89,7 +91,7 @@ export default () => {
   }));
 
   // STATIC
-  app.use(serve(process.cwd()));
+  app.use(serve(path.join(process.env.PWD, 'public')));
 
   // WEBPACK
   if (process.env.NODE_ENV !== 'production') {
