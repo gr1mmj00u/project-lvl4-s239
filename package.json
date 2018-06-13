@@ -1,6 +1,6 @@
 {
   "name": "cross-task-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Task manager",
   "main": "index.js",
   "engines": {
@@ -17,7 +17,8 @@
     "gulp": "gulp",
     "start": "gulp server",
     "webpack": "webpack",
-    "sequelize": "sequelize"
+    "sequelize": "sequelize",
+    "heroku-postbuild": "npm run build"
   },
   "files": [
     "dist"
