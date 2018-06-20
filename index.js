@@ -31,7 +31,6 @@ export default () => {
         ctx.throw(404);
       }
     } catch (err) {
-      console.log(err);
       // Errors handling using Rollbar
       if (process.env.RollbarApiKey) {
         const rollbar = new Rollbar(process.env.RollbarApiKey);
@@ -57,7 +56,7 @@ export default () => {
   });
 
   // LOGGER
-  // app.use(koaLogger());
+  app.use(koaLogger());
 
   // SESSION
   app.use(session(app));

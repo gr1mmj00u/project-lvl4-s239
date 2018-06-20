@@ -1,11 +1,21 @@
 # cross-task-manager
 
-https://infinite-eyrie-38623.herokuapp.com/
+https://calm-spire-66207.herokuapp.com
 
+## Open in web
+localhost:3000
 
-Open localhost:3000
+## Start server
+```make install```
 
-## helpers links
+Set the environment variable in .env file (```NODE_ENV=development``` or ```NODE_ENV=production```)
+
+```make db-setup```
+
+## Tests
+```make test```
+
+## Helpers links
 
 Sequelize:
 https://github.com/sequelize/express-example
