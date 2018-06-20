@@ -1,6 +1,6 @@
 {
   "name": "cross-task-manager",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Task manager",
   "main": "index.js",
   "engines": {
@@ -8,7 +8,7 @@
     "npm": "5.6.0"
   },
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "npm run sequelize db:migrate && jest --detectOpenHandles --runInBand",
     "babel-node": "babel-node",
     "build": "npm run webpack -- -p --env production && babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build",
@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/gr1mmj00u/project-lvl4-s239#readme",
   "dependencies": {
+    "@babel/register": "^7.0.0-beta.51",
     "autoprefixer": "^8.5.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
@@ -54,6 +55,7 @@
     "dotenv": "^5.0.1",
     "gulp": "^3.9.1",
     "gulp-util": "^3.0.8",
+    "jade-bootstrap": "^1.0.14",
     "jquery": "^3.3.1",
     "jquery-ujs": "^1.2.2",
     "koa": "^2.5.1",

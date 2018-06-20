@@ -7,7 +7,7 @@ lint:
 build:
 	npm run build
 test:
-	NODE_ENV="development" npm test
+	NODE_ENV="test" npm test
 
 prepare:
 	touch .bash_history
