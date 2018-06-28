@@ -1,11 +1,11 @@
 extends /layouts/application.pug
 
 block content
-  .form-signup
-    h1.h3.mb-3.font-weight-normal Sign up
+  .mx-auto.border.rounded.p-3.col-sm-4
+    h1.text-center.mb-3.font-weight-normal Sign up
     +formFor(f, { url: urlFor('user'), method: 'post' })
-        +input(f, 'email', { label: 'Email' })
-        +input(f, 'firstName', { label: 'First name'})
-        +input(f, 'lastName', { label: 'Last name'})
-        +input(f, 'password', { as: 'password', label: 'Password'})
+        +input(f, 'email', { label: 'Email', required: true })
+        +input(f, 'firstName', { label: 'First name', required: true })
+        +input(f, 'lastName', { label: 'Last name', required: true })
+        +input(f, 'password', { as: 'password', label: 'Password', required: true })
         +button(f, 'submit', { value: 'Create' })

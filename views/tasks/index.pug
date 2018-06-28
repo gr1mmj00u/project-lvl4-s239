@@ -1,0 +1,24 @@
+extends /layouts/application.pug
+
+block content
+  a.btn.btn-outline-success(href=urlFor('newTask')) New task
+  h1 List tasks
+  table.table.table-striped.table-bordered.table-hover
+    thead.thead-light
+      tr
+        th Id
+        th Task Name
+        //- th Description
+        th Asigned to
+        th Creator
+        th Created At
+    tbody
+      each task in tasks
+        tr
+          td
+            a(href=urlFor('edit task', { id: task.id }))= task.id
+          td
+            a(href=urlFor('edit task', { id: task.id }))= task.name
+          td= task.Worker.fullName()
+          td= task.Creator.fullName()
+          td= task.createdAt

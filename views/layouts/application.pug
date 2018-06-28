@@ -11,7 +11,7 @@ html(lang="en")
 		meta(name="author",content="")
 		script(src='/assets/main.js')
 	body
-		nav.navbar.navbar-expand-lg.navbar-light.bg-light
+		nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-3
 			.container
 				a.navbar-brand(href='/') Cross-Task-Manager
 				button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExample07', aria-controls='navbarsExample07', aria-expanded='false', aria-label='Toggle navigation')
@@ -24,7 +24,9 @@ html(lang="en")
 						li.nav-item
 							a.nav-link(href=urlFor('users')) Users
 						li.nav-item
-							a.nav-link.disabled(href='#') Tasks
+							a.nav-link(href=urlFor('tasks')) Tasks
+						li.nav-item
+							a.nav-link(href=urlFor('tags')) Tags
 					if isSignedIn()
 						div.dropdown.show
 							a.btn.btn-secondary.dropdown-toggle(href="#" id="dropdownMenuLink"

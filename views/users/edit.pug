@@ -1,14 +1,14 @@
 extends /layouts/application.pug
 
 block content
-  .form-user-edit
-    h2 Basic info
+  .mx-auto.border.rounded.p-3.col-sm-4
+    h1.text-center.mb-3.font-weight-normal Basic info
     +formFor(f, { url: urlFor('user'), method: 'put' })
-      +input(f, 'email', { label: 'Email' })
-      +input(f, 'firstName', { label: 'First name'})
-      +input(f, 'lastName', { label: 'Last name'})
+      +input(f, 'email', { label: 'Email', required: true})
+      +input(f, 'firstName', { label: 'First name', required: true})
+      +input(f, 'lastName', { label: 'Last name', required: true})
       //- +input(f, 'password', { as: 'password', label: 'Old password'})
       //- +input(f, 'newPassword', { as: 'newPassword', label: 'New password'})
       .form-group
-        +submit-success('Update')
+        +button(f, 'submit', { value: 'Update' }).mr-1
         +a-btn-danger(urlFor('user'), { method: 'delete' }) Delete

@@ -42,7 +42,7 @@ export default (sequelize, DataTypes) => {
 
   // Class Method
   User.associate = function (models) {
-    // ...associate the models
+    User.hasMany(models.Task, { foreignKey: 'creator' } );
   };
 
   // Instance Method

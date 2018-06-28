@@ -10,21 +10,36 @@ export default (router) => {
     })
     .post('session', '/session', async (ctx) => {
       const { email, password } = ctx.request.body.form;
+      const errors = [];
+
       const user = await User.findOne({
         where: {
           email,
         },
       });
 
-      if (user && user.passwordDigest === encrypt(password)) {
-        ctx.session.userId = user.id;
-        ctx.redirect(router.url('root'));
+      if (!user) {
+        errors.push({
+          message: 'User with such email does not exist',
+          path: 'email',
+        });
+      }
+
+      if (user && user.passwordDigest !== encrypt(password)) {
+        errors.push({
+          message: 'Password were wrong',
+          path: 'password',
+        });
+      }
+
+      if (errors.length) {
+        ctx.render('sessions/new', { f: buildFormObj({ email }, { errors }) });
         return;
       }
 
-      ctx.flash.set('Еmail or password were wrong');
-      ctx.redirect(router.url('newSession'));
-      //ctx.render('sessions/new', { f: buildFormObj({ email }) });
+      ctx.session.userId = user.id;
+      ctx.flash.set('Hello my friend!');
+      ctx.redirect(router.url('root'));
     })
     .del('session', '/session', (ctx) => {
       ctx.session = {};

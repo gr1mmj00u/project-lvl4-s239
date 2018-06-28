@@ -5,12 +5,30 @@ import app from '..';
 import db, { User } from '../models';
 import { encrypt } from '../lib/secure';
 
+import userFactory from './helpers/factories/user';
+import truncate from './helpers/truncate';
+
 const createAuthenticatedRequest = async (myserver, loginDetails, done) => {
   const authenticatedRequest = request.agent(myserver);
-
-  return authenticatedRequest.post('/session')
+  authenticatedRequest.post('/session')
     .send(loginDetails)
-    .end(() => done(authenticatedRequest));
+    .end((error, response) => {
+      console.log('awdawd');
+      if (error) {
+        throw error;
+      }
+      const loginCookie = response.headers['set-cookie'];
+      done(loginCookie);
+    });
+
+  // const resp = await authenticatedRequest.post('/session')
+  //   .type('form')
+  //   .send(loginDetails)
+  //   .end(() => done(authenticatedRequest));
+  //   // .then(async () => done(authenticatedRequest));
+  // // const res = await done(resp);
+  // return resp;
+  // .end(() => done(authenticatedRequest));
 };
 
 describe('requests', () => {
@@ -25,43 +43,19 @@ describe('requests', () => {
     },
   };
 
-  beforeAll(() => {
+  beforeAll(async () => {
     jasmine.addMatchers(matchers);
-    db.sequelize.sync();
+    await db.sequelize.sync();
+    // const testUser = new User();
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     server = app().listen(3001);
-  });
-
-  it('GET 200', async () => {
-    const res = await request.agent(server)
-      .get('/');
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('GET 404', async () => {
-    const res = await request.agent(server)
-      .get('/wrong-path');
-    expect(res).toHaveHTTPStatus(404);
-  });
-
-  it('Users list page', async () => {
-    const res = await request.agent(server)
-      .get('/users');
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('Sign in page', async () => {
-    const res = await request.agent(server)
-      .get('/session/new');
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('Sign up page', async () => {
-    const res = await request.agent(server)
-      .get('/user/new');
-    expect(res).toHaveHTTPStatus(200);
+    // db.sequelize.sync({
+    //   force: true,
+    // });
+    // const trunc = async () => (await truncate())();
+    await truncate();
   });
 
   it('Create user', async () => {
@@ -74,25 +68,29 @@ describe('requests', () => {
 
     const user = await User.findById(1);
 
-    expect(user).toBeInstanceOf(User);
-    expect(user.firstName).toBe(testUser.form.firstName);
-    expect(user.lastName).toBe(testUser.form.lastName);
-    expect(user.email).toBe(testUser.form.email);
-    expect(user.passwordDigest).toBe(encrypt(testUser.form.password));
+    expect(user).toMatchObject({
+      firstName: testUser.form.firstName,
+      lastName: testUser.form.lastName,
+      email: testUser.form.email,
+      passwordDigest: encrypt(testUser.form.password),
+    });
   });
 
-  it('Authorization user', async () => {
-    const getUserPage = async (req) => {
-      const res = await req.get('/user');
-      return res;
-    };
+  // it('Authorization user', async () => {
+  //   await userFactory(testUser.form);
 
-    const res = await createAuthenticatedRequest(server, testUser, getUserPage);
+  //   const getUserPage = async (req) => {
+  //     const res = await req.get('/user');
+  //     return res;
+  //   };
 
-    expect(res).toHaveHTTPStatus(302);
-  });
+  //   const res = await createAuthenticatedRequest(server, testUser, getUserPage);
+
+  //   expect(res).toHaveHTTPStatus(302);
+  // });
 
   it('Update user', async () => {
+    const user = await userFactory(testUser.form);
     const newDataUser = {
       form: {
         firstName: 'TestTest',
@@ -100,24 +98,93 @@ describe('requests', () => {
       },
     };
 
-    const put = async (req) => {
-      const res = await req.put('/user')
-        .type('form')
-        .send(newDataUser);
+    const res1 = await request.agent(server)
+      .post('/session')
+      .send(testUser);
 
-      return res;
-    };
+    console.log(res1.headers['set-cookie']);
+    const res2 = await request.agent(server)
+      .put('/user')
+      .set('cookie', res1.headers['set-cookie'])
+      .type('form')
+      .send(newDataUser);
 
-    const res = await createAuthenticatedRequest(server, testUser, put);
+    expect(res2).toHaveHTTPStatus(302);
 
-    const user = await User.findById(1);
-    expect(user.firstName).toBe('TestTest');
-    expect(user.lastName).toBe('TestTest');
-    expect(res).toHaveHTTPStatus(302);
+    const userExpected = await User.findById(user.id);
+
+    expect(userExpected).toMatchObject({
+      awd: newDataUser.form.firstName,
+      lastName: newDataUser.form.lastName,
+      email: testUser.form.email,
+      passwordDigest: encrypt(testUser.form.password),
+    });
+
+    // const authenticatedRequest = request.agent(server);
+
+    // const resp = await authenticatedRequest.post('/session')
+    //   .type('form')
+    //   .send(newDataUser)
+    //   .then(res => authenticatedRequest.put('/user')
+    //     .type('form')
+    //     .send(newDataUser)
+    //     .then((response) => {
+    //       expect(response).toHaveHTTPStatus(302);
+    //       // const userExpected = await User.findById(user.id);
+    //       // console.log('awdawd');
+    //       // expect(userExpected).toMatchObject({
+    //       //   awd: newDataUser.form.firstName,
+    //       //   lastName: newDataUser.form.lastName,
+    //       //   email: testUser.form.email,
+    //       //   passwordDigest: encrypt(testUser.form.password),
+    //       // });
+    //     }) );
+
+    // .then(async () => done(authenticatedRequest));
+    // const res = await done(resp);
+    // return resp;
+
+    // const put = async (cookie) => {
+    //   await request.agent(server).put('/user')
+    //     .type('form')
+    //     .set('cookie', cookie)
+    //     .send(newDataUser)
+    //     .end(async (response) => {
+    //       console.log(response);
+    //       expect(response).toHaveHTTPStatus(302);
+    //       const userExpected = await User.findById(user.id);
+
+    //       expect(userExpected).toMatchObject({
+    //         awd: newDataUser.form.firstName,
+    //         lastName: newDataUser.form.lastName,
+    //         email: testUser.form.email,
+    //         passwordDigest: encrypt(testUser.form.password),
+    //       });
+    //     })
+    //     .catch(e => console.log(e));
+    // };
+
+    // await createAuthenticatedRequest(server, testUser, put);
   });
 
-  afterEach((done) => {
+  // it('Create task', async () => {
+  //   const testTask = {
+  //     form: {
+  //       name: 'name task',
+  //       description: 'description',
+  //       assignedTo: 2,
+  //     };
+
+
+  //   };
+  // });
+
+  afterEach(() => {
     server.close();
-    done();
+    // db.sequelize.close();
+  });
+
+  afterAll(() => {
+    db.sequelize.close();
   });
 });

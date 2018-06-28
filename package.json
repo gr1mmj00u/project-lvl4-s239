@@ -1,6 +1,6 @@
 {
   "name": "cross-task-manager",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Task manager",
   "main": "index.js",
   "engines": {
@@ -8,7 +8,7 @@
     "npm": "5.6.0"
   },
   "scripts": {
-    "test": "npm run sequelize db:migrate && jest --detectOpenHandles --runInBand",
+    "test": "npm run sequelize db:migrate && jest --runInBand",
     "babel-node": "babel-node",
     "build": "npm run webpack -- -p --env production && babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build",
@@ -37,6 +37,14 @@
     "url": "https://github.com/gr1mmj00u/project-lvl4-s239/issues"
   },
   "homepage": "https://github.com/gr1mmj00u/project-lvl4-s239#readme",
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/__tests__/__fixtures__/",
+      "<rootDir>/__tests__/helpers/"
+    ]
+  },
   "dependencies": {
     "@babel/register": "^7.0.0-beta.51",
     "autoprefixer": "^8.5.2",
@@ -86,6 +94,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-flowtype": "^2.47.1",
     "eslint-plugin-import": "^2.12.0",
+    "faker": "^4.1.0",
     "jest": "^23.0.1",
     "jest-cli": "^23.0.1",
     "jest-supertest-matchers": "0.0.1",

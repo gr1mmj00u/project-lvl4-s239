@@ -20,6 +20,8 @@ console:
 	npm run gulp console
 
 db-setup:
-	npm run sequelize db:migrate
+	rm db.development.sqlite && npm run sequelize db:migrate
+db-seeds:
+	npm run sequelize db:seed:all
 
 .PHONY: test

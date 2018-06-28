@@ -6,7 +6,7 @@ export default (router) => {
   router
     .get('users', '/users', async (ctx) => {
       const users = await User.findAll();
-      ctx.render('users', { users });
+      ctx.render('users/index', { users });
     })
     .get('newUser', '/user/new', async (ctx) => {
       const user = User.build();

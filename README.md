@@ -22,6 +22,8 @@ https://github.com/sequelize/express-example
 https://gist.github.com/andrewmunro/030f0bf62453239c495b0347c8cd1247
 https://github.com/sequelize/sequelize/issues/4728
 
+node_modules/.bin/sequelize db:seed:all
+
 CRUD:
 https://lorenstewart.me/2016/10/03/sequelize-crud-101/
 
@@ -30,3 +32,5 @@ https://www.sqlite.org/cli.html
 
 Check port:
 netstat -tulpn | grep :3000
+
+ "test": "npm run sequelize db:migrate && jest --runInBand", /* --detectOpenHandles */

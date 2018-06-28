@@ -1,0 +1,13 @@
+extends /layouts/application.pug
+
+block content
+  a.btn.btn-outline-success(href=urlFor('newTag')) New tag
+  h1 List tags
+  table.table.table-striped.table-bordered.table-hover
+    thead.thead-light
+      tr
+        th Tag
+    tbody
+      each tag in tags
+        tr
+          td= tag.name

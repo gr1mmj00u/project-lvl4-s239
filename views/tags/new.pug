@@ -1,0 +1,8 @@
+extends /layouts/application.pug
+
+block content
+  .mx-auto.border.rounded.p-3.col-md-6
+    h1.text-center.mb-3.font-weight-normal Basic info New tag
+    +formFor(f, { url: urlFor('tag'), method: 'post' })
+        +input(f, 'name', { label: 'Name' , required: true})
+        +button(f, 'submit', { value: 'Create' })

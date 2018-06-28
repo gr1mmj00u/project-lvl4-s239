@@ -1,9 +1,9 @@
 extends /layouts/application.pug
 
 block content
-  .container.form-signin
-    h1.h3.mb-3.font-weight-normal Please sign in
+  .mx-auto.border.rounded.p-3.col-sm-4
+    h1.text-center.mb-3.font-weight-normal Please sign in
     +formFor(f, { url: urlFor('session'), method: 'post' })
-      +input(f, 'email', { label: 'Email' })
-      +input(f, 'password', { as: 'password' ,label: 'Password'})
+      +input(f, 'email', { label: 'Email', required: true })
+      +input(f, 'password', { as: 'password', label: 'Password', required: true })
       +button(f)
