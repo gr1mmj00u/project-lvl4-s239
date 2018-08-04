@@ -1,6 +1,6 @@
 export const up = (queryInterface, Sequelize) =>
   queryInterface.bulkInsert(
-    'TaskStatuses',
+    'taskStatuses',
     [
       {
         id: 1,
@@ -26,4 +26,4 @@ export const up = (queryInterface, Sequelize) =>
     ], {},
   );
 
-export const down = (queryInterface, Sequelize) => queryInterface.bulkDelete('TaskStatuses', null, {});
+export const down = (queryInterface, Sequelize) => queryInterface.bulkDelete('taskStatuses', null, {});
