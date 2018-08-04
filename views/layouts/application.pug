@@ -18,29 +18,37 @@ html(lang="en")
 					span.navbar-toggler-icon
 				#navbarsExample07.collapse.navbar-collapse
 					ul.navbar-nav.mr-auto
-						li.nav-item.active
-							a.nav-link(href='#') Dashbroad 
-								span.sr-only (current)
 						li.nav-item
 							a.nav-link(href=urlFor('users')) Users
-						li.nav-item
-							a.nav-link(href=urlFor('tasks')) Tasks
-						li.nav-item
-							a.nav-link(href=urlFor('tags')) Tags
+						if isSignedIn()
+							li.nav-link.dropdown
+								a.dropdown-toggle(href="#" id="dropdownMenuTasks"
+																										role="button" data-toggle="dropdown"
+																										aria-haspopup="true" aria-expanded="false") Tasks
+								.dropdown-menu(aria-labelledby="dropdownMenuTasks")
+									a.dropdown-item(href=urlFor('tasks')) Task list
+									a.dropdown-item(href=urlFor('new task')) New task
+							li.nav-link.dropdown
+								a.dropdown-toggle(href="#" id="dropdownMenuStatuses"
+																										role="button" data-toggle="dropdown"
+																										aria-haspopup="true" aria-expanded="false") Statuses
+								.dropdown-menu(aria-labelledby="dropdownMenuStatuses")
+									a.dropdown-item(href=urlFor('statuses')) Status list
+									a.dropdown-item(href=urlFor('new status')) New status
 					if isSignedIn()
 						div.dropdown.show
 							a.btn.btn-secondary.dropdown-toggle(href="#" id="dropdownMenuLink"
 																									role="button" data-toggle="dropdown"
 																									aria-haspopup="true" aria-expanded="false")= user.fullName()
 							.dropdown-menu(aria-labelledby="dropdownMenuLink")
-								a.dropdown-item(href=urlFor('user')) Edit
-								a.dropdown-item(href=urlFor('session') data-method='delete' rel='nofollow') Sign out
+								a.dropdown-item(href=urlFor('user edit', { id: user.id })) Edit
+								a.dropdown-item(href=urlFor('sessions delete') data-method='delete' rel='nofollow') Sign out
 					else
 						nav.my-2.my-md-0.mr-md-3
-							a.btn.btn-outline-primary.mr-sm-2(href=urlFor('newSession')) Sign in
-							a.btn.btn-outline-success(href=urlFor('newUser')) Sign up
+							a.btn.btn-outline-primary.mr-sm-2(href=urlFor('sessions new')) Sign in
+							a.btn.btn-outline-success(href=urlFor('new user')) Sign up
 	.container
-		- const msg = flash.get()
-		if msg
-			.alert.alert-info.m-3= msg
+		- const alertObj = flash.get()
+		if alertObj
+			.alert.m-3(class=`alert-${alertObj.type}`)= alertObj.message
 		block content

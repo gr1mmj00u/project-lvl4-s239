@@ -1,0 +1,10 @@
+extends /layouts/application.pug
+
+block content
+  .mx-auto.border.rounded.p-3.col-md-6
+    h1.text-center.mb-3.font-weight-normal Basic info New status
+    +formFor(f, { url: urlFor('status post'), method: 'post' })
+      +input(f, 'name', { label: 'Name' , required: true})
+      .clearfix.form-group
+        .float-right
+          +button(f, 'submit', { value: 'Create' })

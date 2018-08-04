@@ -1,0 +1,11 @@
+extends /layouts/application.pug
+
+block content
+  .mx-auto.border.rounded.p-3.col-md-6
+    h1.text-center.mb-3.font-weight-normal Edit status
+    +formFor(f, { url: urlFor('update status', { id: status.id }), method: 'put' })
+      +input(f, 'name', { label: 'Name' , required: true })
+      .clearfix.form-group
+        .float-right
+          +button(f, 'submit', { value: 'Update' }).mr-1
+          +a-btn(urlFor('delete status', { id: status.id }), { method: 'delete' })(data-confirm='Are you sure you want to delete the status?').btn-danger Delete

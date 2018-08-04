@@ -1,5 +1,5 @@
 export default function (sequelize, DataTypes) {
-  const Task = sequelize.define('Task', {
+  const Task = sequelize.define('task', {
     name: {
       type: DataTypes.STRING,
       validate: {
@@ -17,14 +17,14 @@ export default function (sequelize, DataTypes) {
         key: 'id',
       },
     },
-    creator: {
+    creatorId: {
       type: DataTypes.INTEGER,
       references: {
         model: 'User',
         key: 'id',
       },
     },
-    assignedTo: {
+    assignedToId: {
       type: DataTypes.INTEGER,
       references: {
         model: 'User',
@@ -35,10 +35,10 @@ export default function (sequelize, DataTypes) {
 
   Task.associate = function (models) {
     // associations can be defined here
-    models.Task.belongsTo(models.User, { foreignKey: 'creator' , as: 'Creator' });
-    models.Task.belongsTo(models.User, { foreignKey: 'assignedTo', as: 'Worker' });
-    models.Task.belongsTo(models.TaskStatus, { foreignKey: 'status', as: 'Status' });
-    models.Task.belongsToMany(models.Tag, { through: 'TaskTag', foreignKey: 'taskId' });
+    models.task.belongsTo(models.user, { foreignKey: 'creatorId', as: 'creator' });
+    models.task.belongsTo(models.user, { foreignKey: 'assignedToId', as: 'worker' });
+    models.task.belongsTo(models.taskStatus, { foreignKey: 'status' });
+    models.task.belongsToMany(models.tag, { through: 'taskTag', foreignKey: 'taskId', as: 'tags' });
   };
 
   return Task;

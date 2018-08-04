@@ -1,90 +1,174 @@
+import Sequelize from 'sequelize';
 import buildFormObj from '../lib/formObjectBuilder';
-import { Task, User, Tag, TaskStatus } from '../models';
+import { task as Task, user as User, tag as Tag, taskStatus as TaskStatus } from '../models';
 import { requiredAuth, getOptionsArray as getUsersOptionsArray } from '../lib/user';
-import { getOptionsArray as getTagsOptionsArray } from '../lib/tags';
+import { parseToTags, createUniqTags } from '../lib/tags';
+
+const { Op } = Sequelize;
 
 export default (router) => {
   router
-    .get('tasks', '/tasks', async (ctx) => {
+    .get('tasks', '/tasks', requiredAuth, async (ctx) => {
+      const {
+        status, tags, assignedTo: assignedToId, myTasks,
+      } = ctx.query;
+
+      const { userId } = ctx.session;
+      const query = {};
+      const tagsQuery = {};
+
+      if (myTasks !== undefined) {
+        query.creatorId = userId;
+      }
+
+      if (assignedToId && Number(assignedToId) !== 0) {
+        query.assignedToId = Number(assignedToId);
+      }
+
+      if (status && Number(status) !== 0) {
+        query.status = Number(status);
+      }
+      const tagsArray = parseToTags(tags);
+
+      if (tagsArray.length) {
+        tagsQuery.name = {
+          [Op.or]: tagsArray.map(t => ({ [Op.like]: `%${t}%` })),
+        };
+        // Not working in sqlite
+        // tagsQuery.name = {
+        //   [Op.like]: { [Op.any]: tagsArray },
+        // };
+      }
+
       const tasks = await Task.findAll({
         include: [
-          { model: User, as: 'Worker' }, // load all pictures
-          { model: User, as: 'Creator' }, // load the profile picture.
-          { model: TaskStatus, as: 'Status' },
-          { model: Tag },
+          { model: User, as: 'worker' }, // load all pictures
+          { model: User, as: 'creator' }, // load the profile picture.
+          { model: TaskStatus },
+          { model: Tag, as: 'tags', where: tagsQuery },
         ],
+        where: query,
       });
 
-      ctx.render('tasks', { tasks: tasks || [] });
-    })
-    .get('newTask', '/newtask', requiredAuth, async (ctx) => {
       const users = await User.findAll();
-      const tags = await Tag.findAll();
+      const statuses = await TaskStatus.findAll();
+
+      const statusOptions = statuses.reduce(
+        (acc, st) => [...acc, { id: st.id, name: st.name }],
+        [{ id: 0, name: 'any' }],
+      ).map(s => (s.id === Number(status) ? { ...s, selected: true } : s));
+
+      const usersOptions = [{ id: 0, name: 'any' }, ...getUsersOptionsArray(users)]
+        .map(u => (u.id === Number(assignedToId) ? { ...u, selected: true } : u));
+
+      const form = buildFormObj({
+        tags, myTasks,
+      });
+
+      form.name = '';
+
+      ctx.render('tasks', {
+        statusOptions,
+        usersOptions,
+        f: form,
+        tasks: tasks || [],
+      });
+    })
+    .get('new task', '/tasks/new', requiredAuth, async (ctx) => {
+      const users = await User.findAll();
       const usersOptions = getUsersOptionsArray(users);
-      const tagsOptions = getTagsOptionsArray(tags);
       const task = Task.build();
 
-      ctx.render('tasks/new', { tagsOptions, usersOptions, f: buildFormObj(task) });
+      ctx.render('tasks/new', { usersOptions, f: buildFormObj(task) });
     })
-    .get('edit task', '/task/:id', requiredAuth, async (ctx) => {
-      const taskId = ctx.params.id;
+    .get('edit task', '/tasks/:id/edit', requiredAuth, async (ctx) => {
+      const { id } = ctx.params;
       try {
-        const task = await Task.findById(taskId);
-
+        const task = await Task.findById(id, {
+          include: [{
+            model: Tag,
+            as: 'tags',
+          }],
+        });
         const users = await User.findAll();
-        const tags = await Tag.findAll();
         const status = await TaskStatus.findAll();
 
-        const statusOptions = status.map(st => ({ id: st.id, name: st.name }));
-        const usersOptions = getUsersOptionsArray(users);
-        const tagsOptions = getTagsOptionsArray(tags);
+        const selectedTags = task.tags.map(tag => tag.name).join(', ');
+
+        const statusOptions = status.map(st => ({ id: st.id, name: st.name }))
+          .map(s => (s.id === task.status ? { ...s, selected: true } : s));
+
+        const usersOptions = getUsersOptionsArray(users)
+          .map(u => (u.id === task.assignedToId ? { ...u, selected: true } : u));
+
         ctx.render('tasks/edit', {
-          statusOptions, usersOptions, tagsOptions, task, f: buildFormObj(task),
+          statusOptions, usersOptions, selectedTags, task, f: buildFormObj(task),
         });
       } catch (e) {
-        ctx.flash.set('Internal error');
+        ctx.flash.setDangerAlert(e.message);
         ctx.redirect(router.url('tasks'));
       }
     })
-    .post('create task', '/task', requiredAuth, async (ctx) => {
+    .post('create task', '/tasks', requiredAuth, async (ctx) => {
       const user = await User.findById(ctx.session.userId);
       const { request: { body: { form } } } = ctx;
 
       try {
         const task = await user.createTask(form);
-        await task.addTags(form.tags);
+        const tagsArray = parseToTags(form.tags);
 
-        ctx.flash.set('Task has been created');
+        const tags = await createUniqTags(tagsArray);
+        await task.setTags(tags);
+
+        ctx.flash.setSuccessAlert('Task has been created');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
         const users = await User.findAll();
         const usersOptions = getUsersOptionsArray(users);
+
+        ctx.flash.setDangerAlert('Task was not created');
         ctx.render('tasks/new', { usersOptions, f: buildFormObj(form, e) });
       }
     })
     .put('update task', '/tasks/:id', requiredAuth, async (ctx) => {
+      const { id } = ctx.params;
       const { request: { body: { form } } } = ctx;
       try {
-        const user = await User.findById(ctx.session.userId);
-        await user.update(form);
-        ctx.flash.set('Task has been updated');
+        const task = await Task.findById(id);
+
+        if (!task) {
+          ctx.throw(404);
+        }
+
+        await task.update(form);
+        const tagsArray = parseToTags(form.tags);
+
+        const tags = await createUniqTags(tagsArray);
+        await task.setTags(tags);
+
+        ctx.flash.setSuccessAlert('Task has been updated');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
-        ctx.flash.set(e.message);
+        ctx.flash.setDangerAlert(e.message);
       }
       ctx.redirect(router.url('tasks'));
     })
-    .delete('delete task', '/task/:id', async (ctx) => {
+    .delete('delete task', '/task/:id', requiredAuth, async (ctx) => {
+      const { id } = ctx.params;
       try {
-        const taskId = ctx.params.id;
-        const task = await Task.findById(taskId);
+        const task = await Task.findById(id);
+
+        if (!task) {
+          ctx.throw(404);
+        }
+
         await task.destroy();
-        ctx.flash.set('Task has been deleted');
-        ctx.session = {};
+
+        ctx.flash.setSuccessAlert('Task has been deleted');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
-        ctx.flash.set(e.message);
-        ctx.redirect(router.url('tasks'));
+        ctx.flash.setDangerAlert(e.message);
+        ctx.redirect(router.url('edit task', { id }));
       }
     });
 };

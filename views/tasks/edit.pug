@@ -7,8 +7,10 @@ block content
       +input(f, 'name', { label: 'Name' , required: true})
       +select(f, 'status', { label: 'Status', values: statusOptions })
       +textarea(f, 'description', { label: 'Description' })
-      +select(f, 'assignedTo', { label: 'Assign to', values: usersOptions })
-      +select(f, 'tags', { label: 'Tags', values: tagsOptions, multiple: true })
-      .form-group
-        +button(f, 'submit', { value: 'Update' }).mr-1
-        +a-btn-danger(urlFor('delete task', {id: task.id }), { method: 'delete' }) Delete
+      +select(f, 'assignedToId', { label: 'Assign to', values: usersOptions })
+      +input(f, 'tags', { label: 'Tags', values: selectedTags, required: true })
+      //- +select(f, 'tags', { label: 'Tags', values: tagsOptions, multiple: true })
+      .clearfix.form-group
+        .float-right
+          +button(f, 'submit', { value: 'Update' }).mr-1
+          +a-btn(urlFor('delete task', { id: task.id }), { method: 'delete' })(data-confirm='Are you sure you want to delete the task?').btn-danger Delete

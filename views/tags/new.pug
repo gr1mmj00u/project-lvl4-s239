@@ -5,4 +5,6 @@ block content
     h1.text-center.mb-3.font-weight-normal Basic info New tag
     +formFor(f, { url: urlFor('tag'), method: 'post' })
         +input(f, 'name', { label: 'Name' , required: true})
-        +button(f, 'submit', { value: 'Create' })
+        .clearfix.form-group
+          .float-right
+          +button(f, 'submit', { value: 'Create' })

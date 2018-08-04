@@ -16,17 +16,14 @@ const up = (queryInterface, Sequelize) => queryInterface.createTable('Tasks', {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  creator: {
+  creatorId: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  assignedTo: {
+  assignedToId: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  // tags: {
-
-  // },
   createdAt: {
     allowNull: false,
     type: Sequelize.DATE,

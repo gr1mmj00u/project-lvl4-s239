@@ -3,7 +3,9 @@ extends /layouts/application.pug
 block content
   .mx-auto.border.rounded.p-3.col-sm-4
     h1.text-center.mb-3.font-weight-normal Please sign in
-    +formFor(f, { url: urlFor('session'), method: 'post' })
+    +formFor(f, { url: urlFor('sessions post'), method: 'post' })
       +input(f, 'email', { label: 'Email', required: true })
       +input(f, 'password', { as: 'password', label: 'Password', required: true })
-      +button(f)
+      .clearfix.form-group
+        .float-right
+          +button(f, type='submit', options={ value: 'Log in' })

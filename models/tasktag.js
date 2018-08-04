@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataTypes) => {
-  const TaskTag = sequelize.define('TaskTag', {
+export default (sequelize, DataTypes) => {
+  const TaskTag = sequelize.define('taskTag', {
     taskId: {
       type: DataTypes.INTEGER,
       references: {

@@ -1,0 +1,16 @@
+extends /layouts/application.pug
+
+block content
+  //- a.btn.btn-outline-success(href=urlFor('new status')) New Status
+  h1 List statuses
+  table.table.table-striped.table-bordered.table-hover
+    thead.thead-light
+      tr
+        th.col-11 Tag
+        th.col-1 Action
+    tbody
+      each status in statuses
+        tr
+          td= status.name
+          td
+            +a-btn(urlFor('edit status', { id: status.id }), { method: 'get' }).btn-primary.btn-sm Edit

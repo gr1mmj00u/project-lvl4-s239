@@ -1,24 +1,45 @@
 extends /layouts/application.pug
 
 block content
-  a.btn.btn-outline-success(href=urlFor('newTask')) New task
+  //- a.btn.btn-outline-success(href=urlFor('new task')) New task
   h1 List tasks
+  +formFor(f, { url: urlFor('tasks'), method: 'get' })
+    .form-row.align-items-center
+      .col-2.my-1
+        +select(f, 'status', { label: 'Status', values: statusOptions })
+      .col-2.my-1
+        +select(f, 'assignedTo', { label: 'Assign to', values: usersOptions })
+      .col-3.my-1
+        +input(f, 'tags', { label: 'Tags', values: selectedTags })
+      .col-2.my-1.mt-3
+        +checkbox(f, 'myTasks', { label: 'My tasks' })#checkbox1
+      .col-3.my-1
+        .float-right
+          +button(f, 'submit', { value: 'Search' }).mr-1.mt-3
+          +a-btn(urlFor('tasks'), { method: 'get' }).btn-danger.mt-3 Clear
   table.table.table-striped.table-bordered.table-hover
     thead.thead-light
       tr
-        th Id
-        th Task Name
-        //- th Description
-        th Asigned to
-        th Creator
-        th Created At
+        th(style='width: 10%') Task Name
+        th(style='width: 35%') Description
+        th(style='width: 10%') Status
+        th(style='width: 10%') Tags
+        th(style='width: 10%') Asigned to
+        th(style='width: 10%') Creator
+        th(style='width: 5%') Action
     tbody
       each task in tasks
-        tr
-          td
-            a(href=urlFor('edit task', { id: task.id }))= task.id
-          td
-            a(href=urlFor('edit task', { id: task.id }))= task.name
-          td= task.Worker.fullName()
-          td= task.Creator.fullName()
-          td= task.createdAt
+        tr.text-capitalize
+          td.align-middle
+            span.d-inline-block(data-toggle='tooltip' data-placement='top' title=`Created at: ${dateFormat(task.createdAt, 'yyyy-mm-dd HH:MM:ss')}\nUpdated at ${dateFormat(task.updatedAt, 'yyyy-mm-dd HH:MM:ss')}`)= task.name
+          td.align-middle= task.description
+          td.align-middle
+            span.badge.badge-primary= task.taskStatus.name
+          td.align-middle
+            if task.tags
+              each tag in task.tags
+                span.badge.badge-secondary.mr-1= tag.name
+          td.align-middle= task.worker ? task.worker.fullName() : ''
+          td.align-middle= task.creator ? task.creator.fullName() : ''
+          td.align-middle
+            +a-btn(urlFor('edit task', { id: task.id }), { method: 'get' }).btn-primary.btn-sm Edit

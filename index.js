@@ -7,12 +7,13 @@ import Router from 'koa-router';
 import middleware from 'koa-webpack';
 import bodyParser from 'koa-bodyparser';
 import session from 'koa-generic-session';
-import flash from 'koa-flash-simple';
 import methodOverride from 'koa-methodoverride';
 
 import path from 'path';
 import Rollbar from 'rollbar';
 import _ from 'lodash';
+import dateFormat from 'dateformat';
+import flash from './lib/koa-flash-instant';
 import webpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
 import container from './container';
@@ -46,6 +47,8 @@ export default () => {
           ctx.render('errors/401');
           break;
         case 403:
+          ctx.render('errors/403');
+          break;
         case 404:
           ctx.render('errors/404');
           break;
@@ -116,6 +119,7 @@ export default () => {
     basedir: path.join(__dirname, 'views'),
     helperPath: [
       { _ },
+      { dateFormat },
       { urlFor: (...args) => router.url(...args) },
     ],
   });

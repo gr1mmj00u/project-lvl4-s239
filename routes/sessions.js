@@ -1,14 +1,14 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import { encrypt } from '../lib/secure';
-import { User } from '../models';
+import { user as User } from '../models';
 
 export default (router) => {
   router
-    .get('newSession', '/session/new', async (ctx) => {
+    .get('sessions new', '/sessions/new', async (ctx) => {
       const data = {};
       ctx.render('sessions/new', { f: buildFormObj(data) });
     })
-    .post('session', '/session', async (ctx) => {
+    .post('sessions post', '/sessions', async (ctx) => {
       const { email, password } = ctx.request.body.form;
       const errors = [];
 
@@ -38,10 +38,10 @@ export default (router) => {
       }
 
       ctx.session.userId = user.id;
-      ctx.flash.set('Hello my friend!');
+      ctx.flash.setSuccessAlert('Hello my friend!');
       ctx.redirect(router.url('root'));
     })
-    .del('session', '/session', (ctx) => {
+    .del('sessions delete', '/sessions', (ctx) => {
       ctx.session = {};
       ctx.redirect(router.url('root'));
     });

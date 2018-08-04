@@ -1,16 +1,18 @@
-- const getInputName = (f, property) => `${f.name}[${property}]`
+- const getInputName = (f, property) => f.name ? `${f.name}[${property}]` : `${property}`
 
 mixin formFor(f, options = {})
   - const url = _.get(options, 'url');
   - const method = _.get(options, 'method', 'get').toLowerCase();
   - const isStandart = _.includes(['get', 'post'], method);
-  form(action= url method= isStandart ? method : 'post')
+  form(action= url method= isStandart ? method : 'post')&attributes(attributes)
     if !isStandart
       input(name='_method' type='hidden' value= method)
     block
 
 mixin input(f, property, options = { as: 'text' })
-  - const value = f.object[property] === undefined ? '' : f.object[property]
+  - const valOptions = options.values === undefined ? '' : options.values
+  - const valueForm = f.object[property] === undefined ? '' : f.object[property]
+  - const value = valOptions ? valOptions : valueForm
   - const label = options.label || property
   - const isRequired = options.required ? true : false
   .form-group(class=(f.errors[property] && 'has-danger'))
@@ -24,7 +26,7 @@ mixin textarea(f, property, options = { as: 'text' })
   - const label = options.label || property
   .form-group(class=(f.errors[property] && 'has-danger'))
     label= label
-    textarea(name=getInputName(f, property) cols="30", rows="10" class='form-control' type=options['as'] value=`${value}`)
+    textarea(name=getInputName(f, property) cols="30", rows="10" class='form-control' type=options['as'])= value
     if f.errors[property]
       .form-control-feedback.text-danger= f.errors[property].map(({ message }) => message).join('. ')
 
@@ -37,8 +39,18 @@ mixin select(f, property, options = { as: 'test'})
     label= label
     select(name=getInputName(f, property) class='form-control', multiple=multiple)
       each val in values
-        option(value=`${val.id}` data-st=value)= val.name
+        -const isSelected = val.selected ? true : false
+        option(value=`${val.id}` data-val=val selected=isSelected)= val.name
 
 mixin button(f, type = 'submit', options = { value: 'Save' })
-  .form-group
-    input(class='btn' type=`${type}` value=`${options.value}`)
+  - const styles = attributes.class === undefined ? '' : ` ${attributes.class}`;
+  input(class=`btn${styles}` type=`${type}` value=`${options.value}`)
+
+mixin checkbox(f, property, options)
+  - const value = f.object[property] === undefined ? '' : f.object[property]
+  - const checked = value ? true : false
+  - const label = options.label || property
+  .custom-control.custom-checkbox
+    input.custom-control-input(name=getInputName(f, property) type='checkbox' id=`${attributes.id}` checked=checked)
+    label.custom-control-label(for=`${attributes.id}`)= label
+      

@@ -1,5 +1,5 @@
 export default function (sequelize, DataTypes) {
-  const TaskStatus = sequelize.define('TaskStatus', {
+  const TaskStatus = sequelize.define('taskStatus', {
     name: {
       type: DataTypes.STRING,
       validate: {
@@ -10,7 +10,7 @@ export default function (sequelize, DataTypes) {
 
   TaskStatus.associate = function (models) {
     // associations can be defined here
-    models.TaskStatus.hasMany(models.Task, { foreignKey: 'status' });
+    models.taskStatus.hasMany(models.task, { foreignKey: 'status' });
   };
 
   return TaskStatus;

@@ -1,7 +1,7 @@
 import { encrypt } from '../lib/secure';
 
 export default (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+  const User = sequelize.define('user', {
     firstName: {
       type: DataTypes.STRING,
       validate: {
@@ -42,7 +42,8 @@ export default (sequelize, DataTypes) => {
 
   // Class Method
   User.associate = function (models) {
-    User.hasMany(models.Task, { foreignKey: 'creator' } );
+    models.user.hasMany(models.task, { foreignKey: 'creatorId' } );
+    models.user.hasMany(models.task, { foreignKey: 'assignedToId' } );
   };
 
   // Instance Method
