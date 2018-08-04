@@ -24,4 +24,4 @@ export function up(queryInterface, Sequelize) {
     },
   });
 }
-export const down = (queryInterface, Sequelize) => queryInterface.dropTable('TaskTags');
+export const down = (queryInterface, Sequelize) => queryInterface.dropTable('taskTags');

@@ -1,6 +1,6 @@
 {
   "name": "cross-task-manager",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Task manager",
   "main": "index.js",
   "engines": {

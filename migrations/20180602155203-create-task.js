@@ -34,6 +34,6 @@ const up = (queryInterface, Sequelize) => queryInterface.createTable('tasks', {
   },
 });
 
-const down = (queryInterface, Sequelize) => queryInterface.dropTable('Tasks');
+const down = (queryInterface, Sequelize) => queryInterface.dropTable('tasks');
 
 export { up, down };

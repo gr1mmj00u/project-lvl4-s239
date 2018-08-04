@@ -19,4 +19,4 @@ export const up = (queryInterface, Sequelize) => queryInterface.createTable('tag
     type: Sequelize.DATE,
   },
 });
-export const down = (queryInterface, Sequelize) => queryInterface.dropTable('Tags');
+export const down = (queryInterface, Sequelize) => queryInterface.dropTable('tags');

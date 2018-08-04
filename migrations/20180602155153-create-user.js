@@ -28,6 +28,6 @@ const up = (queryInterface, Sequelize) => queryInterface.createTable('users', {
   },
 });
 
-const down = (queryInterface, Sequelize) => queryInterface.dropTable('Users');
+const down = (queryInterface, Sequelize) => queryInterface.dropTable('users');
 
 export { up, down };
