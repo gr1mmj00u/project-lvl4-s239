@@ -1,4 +1,4 @@
-export const up = (queryInterface, Sequelize) => queryInterface.createTable('TaskStatuses', {
+export const up = (queryInterface, Sequelize) => queryInterface.createTable('taskStatuses', {
   id: {
     allowNull: false,
     autoIncrement: true,

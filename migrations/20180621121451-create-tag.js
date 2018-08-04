@@ -1,4 +1,4 @@
-export const up = (queryInterface, Sequelize) => queryInterface.createTable('Tags', {
+export const up = (queryInterface, Sequelize) => queryInterface.createTable('tags', {
   id: {
     allowNull: false,
     autoIncrement: true,

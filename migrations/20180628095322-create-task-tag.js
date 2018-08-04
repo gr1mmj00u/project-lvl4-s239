@@ -1,5 +1,5 @@
 export function up(queryInterface, Sequelize) {
-  return queryInterface.createTable('TaskTags', {
+  return queryInterface.createTable('taskTags', {
     id: {
       allowNull: false,
       autoIncrement: true,
