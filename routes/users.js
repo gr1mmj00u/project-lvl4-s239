@@ -1,6 +1,6 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import { user as User } from '../models';
-import { requiredAuth } from '../lib/user';
+import { requiredAuth, requiredUserAccess } from '../lib/user';
 
 export default (router) => {
   router
@@ -12,12 +12,8 @@ export default (router) => {
       const user = User.build();
       ctx.render('users/new', { f: buildFormObj(user) });
     })
-    .get('user edit', '/users/:id/edit', requiredAuth, async (ctx) => {
-      const user = await User.findById(ctx.params.id);
-      if (user.id !== ctx.session.userId) {
-        ctx.status = 403;
-        ctx.throw(403, 'Forbidden');
-      }
+    .get('user edit', '/users/:id/edit', requiredAuth, requiredUserAccess, async (ctx) => {
+      const { user } = ctx.state;
       ctx.render('users/edit', { f: buildFormObj(user) });
     })
     .post('users post', '/users', async (ctx) => {
@@ -32,13 +28,9 @@ export default (router) => {
         ctx.render('users/new', { f: buildFormObj(user, e) });
       }
     })
-    .put('users put', '/users/:id', requiredAuth, async (ctx) => {
+    .put('users put', '/users/:id', requiredAuth, requiredUserAccess, async (ctx) => {
       const { request: { body: { form } } } = ctx;
-      const user = await User.findById(ctx.params.id);
-      if (user.id !== ctx.session.userId) {
-        ctx.status = 403;
-        ctx.throw(403, 'Forbidden');
-      }
+      const { user } = ctx.state;
       try {
         await user.update(form);
         ctx.flash.setSuccessAlert('User has been updated');
@@ -48,12 +40,8 @@ export default (router) => {
         ctx.render('users/edit', { f: buildFormObj(user, e) });
       }
     })
-    .delete('users delete', '/users/:id', async (ctx) => {
-      const user = await User.findById(ctx.params.id);
-      if (user.id !== ctx.session.userId) {
-        ctx.status = 403;
-        ctx.throw(403, 'Forbidden');
-      }
+    .delete('users delete', '/users/:id', requiredAuth, requiredUserAccess, async (ctx) => {
+      const { user } = ctx.state;
       try {
         await user.destroy();
         ctx.session = {};

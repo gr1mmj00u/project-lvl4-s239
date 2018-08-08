@@ -14,41 +14,26 @@ export default (router) => {
       } = ctx.query;
 
       const { userId } = ctx.session;
-      const query = {};
-      const tagsQuery = {};
+      let scope = [];
 
       if (myTasks !== undefined) {
-        query.creatorId = userId;
+        scope = [...scope, { method: ['creatorTasks', userId] }];
       }
 
       if (assignedToId && Number(assignedToId) !== 0) {
-        query.assignedToId = Number(assignedToId);
+        scope = [...scope, { method: ['creatorTasks', Number(assignedToId)] }];
       }
 
       if (status && Number(status) !== 0) {
-        query.status = Number(status);
+        scope = [...scope, { method: ['tasksByStatus', Number(status)] }];
       }
       const tagsArray = parseToTags(tags);
 
       if (tagsArray.length) {
-        tagsQuery.name = {
-          [Op.or]: tagsArray.map(t => ({ [Op.like]: `%${t}%` })),
-        };
-        // Not working in sqlite
-        // tagsQuery.name = {
-        //   [Op.like]: { [Op.any]: tagsArray },
-        // };
+        scope = [...scope, { method: ['hasTag', tagsArray] }];
       }
 
-      const tasks = await Task.findAll({
-        include: [
-          { model: User, as: 'worker' }, // load all pictures
-          { model: User, as: 'creator' }, // load the profile picture.
-          { model: TaskStatus },
-          { model: Tag, as: 'tags', where: tagsQuery },
-        ],
-        where: query,
-      });
+      const tasks = await Task.scope(scope).findAll({ include: [{ all: true, nested: true }] });
 
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();

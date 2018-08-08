@@ -3,14 +3,14 @@ export default (sequelize, DataTypes) => {
     taskId: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Task',
+        model: 'tasks',
         key: 'id',
       },
     },
     tagId: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Status',
+        model: 'tags',
         key: 'id',
       },
     },

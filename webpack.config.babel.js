@@ -1,5 +1,4 @@
 import path from 'path';
-// import 'babel-polyfill';
 import webpack from 'webpack';
 
 module.exports = {
@@ -10,11 +9,6 @@ module.exports = {
     filename: 'main.js',
     publicPath: '/assets/',
   },
-  // optimization: {
-  //   splitChunks: {
-  //     chunks: 'all',
-  //   },
-  // },
   module: {
     rules: [
       {

@@ -18,10 +18,7 @@ describe('requests', () => {
 
   beforeEach(async () => {
     server = app().listen(3001);
-    // await db.sequelize.sync({
-    //   force: true,
-    // });
-    // const trunc = async () => (await truncate())();
+
     await truncate();
   });
 
@@ -45,13 +42,13 @@ describe('requests', () => {
 
   it('Sign in page', async () => {
     const res = await request.agent(server)
-      .get('/session/new');
+      .get('/sessions/new');
     expect(res).toHaveHTTPStatus(200);
   });
 
   it('Sign up page', async () => {
     const res = await request.agent(server)
-      .get('/user/new');
+      .get('/users/new');
     expect(res).toHaveHTTPStatus(200);
   });
 

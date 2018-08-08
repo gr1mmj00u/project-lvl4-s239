@@ -10,7 +10,7 @@ import models from '../../../models';
  *
  * @return {Object}       An object to build the user from.
  */
-const data = async (props = {}) => {
+export const fakeUserData = async (props = {}) => {
   const defaultProps = {
     email: faker.internet.email(),
     firstName: faker.name.firstName(),
@@ -28,4 +28,4 @@ const data = async (props = {}) => {
  * @return {Object}       A user instance
  */
 export default async (props = {}) =>
-  models.User.create(await data(props));
+  models.user.create(await fakeUserData(props));
