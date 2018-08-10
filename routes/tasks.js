@@ -14,23 +14,23 @@ export default (router) => {
       } = ctx.query;
 
       const { userId } = ctx.session;
-      let scope = [];
+      const scope = [];
 
       if (myTasks !== undefined) {
-        scope = [...scope, { method: ['creatorTasks', userId] }];
+        scope.push({ method: ['creatorTasks', userId] });
       }
 
       if (assignedToId && Number(assignedToId) !== 0) {
-        scope = [...scope, { method: ['creatorTasks', Number(assignedToId)] }];
+        scope.push({ method: ['creatorTasks', Number(assignedToId)] });
       }
 
       if (status && Number(status) !== 0) {
-        scope = [...scope, { method: ['tasksByStatus', Number(status)] }];
+        scope.push({ method: ['tasksByStatus', Number(status)] });
       }
       const tagsArray = parseToTags(tags);
 
       if (tagsArray.length) {
-        scope = [...scope, { method: ['hasTag', tagsArray] }];
+        scope.push({ method: ['hasTag', tagsArray] });
       }
 
       const tasks = await Task.scope(scope).findAll({ include: [{ all: true, nested: true }] });
